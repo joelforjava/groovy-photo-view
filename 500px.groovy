@@ -14,7 +14,7 @@ def fivehundred = new HTTPBuilder("$baseUrl")
 
 def cacheService = new CacheService()
 
-def debugMode = true
+def debugMode = config.debugMode
 
 def extractImageIdsFromFeed(feed) {
 	def ids = []
@@ -59,7 +59,14 @@ def photoIds = extractImageIdsFromFeed(feed)
 
 def selectedPhotoIndices = []
 (0..4).each {
-	selectedPhotoIndices << new Random().nextInt(photoCount)
+	// Ensure we select X unique photos
+	while(true) {
+		def nextIndex = new Random().nextInt(photoCount)
+		if (!(nextIndex in selectedPhotoIndices)) {
+			selectedPhotoIndices << nextIndex
+			break
+		}
+	}
 }
 
 def selectedPhotoIds = []
