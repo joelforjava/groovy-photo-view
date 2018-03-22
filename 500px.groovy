@@ -6,7 +6,7 @@ import static groovyx.net.http.ContentType.*
 
 def config = new ConfigSlurper().parse(Config)
 
-String baseUrl = 'https://api.500px.com'
+String baseUrl = config.api.url
 
 def CONSUMER_KEY = config.api.key
 

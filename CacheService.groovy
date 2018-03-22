@@ -9,6 +9,8 @@ class CacheService {
 
 	private static final int TWO_HOURS = 60 * 60 * 1000 * 2
 
+	private def jsonSlurper = new JsonSlurper()
+
 	def setupCache() {
 		def dir = new File(CACHE_DIR_NAME)
 		if (!dir.exists()) {
@@ -40,7 +42,7 @@ class CacheService {
 		def file = new File("$CACHE_DIR_NAME/$MAIN_CACHE_FILE_NAME")
 		def feed
 		if (file.exists()) {
-			feed = new JsonSlurper().parseText(file.text)
+			feed = jsonSlurper.parseText(file.text)
 			feed.loadFeedFromCache = true
 			expireCache()
 		}
@@ -51,7 +53,7 @@ class CacheService {
 		def file = new File("$CACHE_DIR_NAME/_${photoId}.json")
 		def details
 		if (file.exists()) {
-			details = new JsonSlurper().parseText(file.text)
+			details = jsonSlurper.parseText(file.text)
 			details.loadedFromCache = true
 		}
 		details
