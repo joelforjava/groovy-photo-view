@@ -1,0 +1,12 @@
+body { padding-top: 70px; }
+
+.carousel .item{
+    height: 600px;
+}
+
+.item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 300px;
+}

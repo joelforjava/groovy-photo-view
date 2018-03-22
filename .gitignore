@@ -1,0 +1,4 @@
+_cache
+*.class
+/build
+.DS_*
