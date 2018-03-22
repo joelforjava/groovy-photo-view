@@ -2,3 +2,4 @@ _cache
 *.class
 /build
 .DS_*
+Config.groovy

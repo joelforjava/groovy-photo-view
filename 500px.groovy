@@ -4,15 +4,17 @@
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.*
 
-import groovy.json.*
+def config = new ConfigSlurper().parse(Config)
 
 String baseUrl = 'https://api.500px.com'
 
-def CONSUMER_KEY = "<<YOUR_KEY_HERE>>"
+def CONSUMER_KEY = config.api.key
 
 def fivehundred = new HTTPBuilder("$baseUrl")
 
-def debugMode = false
+def cacheService = new CacheService()
+
+def debugMode = true
 
 def extractImageIdsFromFeed(feed) {
 	def ids = []
@@ -36,76 +38,16 @@ def extractImageUrlsFromFeed(feed) {
 	urls
 }
 
-def setupCache() {
-	def dir = new File('_cache')
-	if (!dir.exists()) {
-		dir.mkdirs()
-	}
-}
-
-def cache(feed) {
-	def file = new File('_cache/_cache.json')
-	def feedAsJson = JsonOutput.toJson(feed)
-	if (!file.exists()) {
-		file.withWriter { writer ->
-			writer.write feedAsJson
-		}
-	}
-}
-
-def cachePhoto(photoId, details) {
-	def file = new File("_cache/_${photoId}.json")
-	def detailsAsJson = JsonOutput.toJson(details)
-	if (!file.exists()) {
-		file.withWriter { writer ->
-			writer.write detailsAsJson
-		}
-	}
-}
-
-def loadFeedFromCache() {
-	def file = new File('_cache/_cache.json')
-	def feed
-	if (file.exists()) {
-		feed = new JsonSlurper().parseText(file.text)
-		feed.loadFeedFromCache = true
-		expireCache()
-	}
-	feed
-}
-
-def loadPhotoDetailsFromCache(photoId) {
-	def file = new File("_cache/_${photoId}.json")
-	def details
-	if (file.exists()) {
-		details = new JsonSlurper().parseText(file.text)
-		details.loadedFromCache = true
-	}
-	details
-}
-
-private def expireCache() {
-	def cacheDir = new File('_cache')
-	if (cacheDir.exists()) {
-		def now = new Date().time
-		cacheDir.eachFile { f -> 
-			if (now - f.lastModified() > (60 * 60 * 1000 * 2)) {
-				f.delete()
-			}
-		}
-	}
-}
-
-setupCache()
+cacheService.setupCache()
 
 def errorMessages = []
 
 def feed 
 try {
-	feed = loadFeedFromCache()
+	feed = cacheService.loadFeedFromCache()
 	if (!feed) {
 		feed = fivehundred.get(path: "/v1/photos", contentType: JSON, query: [consumer_key:"$CONSUMER_KEY", feature: 'popular', rpp: 28])
-		cache(feed)
+		cacheService.cache(feed)
 	}
 } catch(e) {
 	errorMessages << 'Error loading feed'
@@ -130,10 +72,10 @@ def selectedPhotos = []
 selectedPhotoIds.each {
 	def selected
 	try {
-		selected = loadPhotoDetailsFromCache(it)
+		selected = cacheService.loadPhotoDetailsFromCache(it)
 		if (!selected) {
 			selected = fivehundred.get(path: "/v1/photos/$it", contentType: JSON, query: [consumer_key:"$CONSUMER_KEY"])
-			cachePhoto(it, selected)
+			cacheService.cachePhoto(it, selected)
 		}
 		selectedPhotos << selected
 	} catch (e) {
