@@ -1,18 +1,8 @@
-@Grapes([
-    @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7' )
-])
-import groovyx.net.http.HTTPBuilder
-import static groovyx.net.http.ContentType.*
+import groovy.json.*
 
 def config = new ConfigSlurper().parse(Config)
 
-String baseUrl = config.api.url
-
-def CONSUMER_KEY = config.api.key
-
-def fivehundred = new HTTPBuilder("$baseUrl")
-
-def cacheService = new CacheService()
+def fivehundred = new FiveHundredPxService()
 
 def debugMode = config.debugMode
 
@@ -38,17 +28,11 @@ def extractImageUrlsFromFeed(feed) {
 	urls
 }
 
-cacheService.setupCache()
-
 def errorMessages = []
 
 def feed 
 try {
-	feed = cacheService.loadFeedFromCache()
-	if (!feed) {
-		feed = fivehundred.get(path: "/v1/photos", contentType: JSON, query: [consumer_key:"$CONSUMER_KEY", feature: 'popular', rpp: 28])
-		cacheService.cache(feed)
-	}
+	feed = fivehundred.getPhotos([:])
 } catch(e) {
 	errorMessages << 'Error loading feed'
 }
@@ -58,13 +42,16 @@ def photoCount = photos?.size() ?: 0
 def photoIds = extractImageIdsFromFeed(feed)
 
 def selectedPhotoIndices = []
-(0..4).each {
-	// Ensure we select X unique photos
-	while(true) {
-		def nextIndex = new Random().nextInt(photoCount)
-		if (!(nextIndex in selectedPhotoIndices)) {
-			selectedPhotoIndices << nextIndex
-			break
+
+if (photoCount) {
+	(0..4).each {
+		// Ensure we select X unique photos
+		while(true) {
+			def nextIndex = new Random().nextInt(photoCount)
+			if (!(nextIndex in selectedPhotoIndices)) {
+				selectedPhotoIndices << nextIndex
+				break
+			}
 		}
 	}
 }
@@ -77,14 +64,8 @@ selectedPhotoIndices.each {
 def selectedPhotos = []
 
 selectedPhotoIds.each {
-	def selected
 	try {
-		selected = cacheService.loadPhotoDetailsFromCache(it)
-		if (!selected) {
-			selected = fivehundred.get(path: "/v1/photos/$it", contentType: JSON, query: [consumer_key:"$CONSUMER_KEY"])
-			cacheService.cachePhoto(it, selected)
-		}
-		selectedPhotos << selected
+		selectedPhotos << fivehundred.getPhoto(it, [:])
 	} catch (e) {
 		errorMessages << "Error loading photo with ID $it"
 	}
