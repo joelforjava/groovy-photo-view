@@ -9,7 +9,7 @@ class CacheService {
 
 	private static final int TWO_HOURS = 60 * 60 * 1000 * 2
 
-	private def jsonSlurper = new JsonSlurper()
+	private jsonSlurper = new JsonSlurper()
 
 	def setupCache() {
 		def dir = new File(CACHE_DIR_NAME)
@@ -59,7 +59,7 @@ class CacheService {
 		details
 	}
 
-	private def expireCache() {
+	private expireCache() {
 		def cacheDir = new File(CACHE_DIR_NAME)
 		if (cacheDir.exists()) {
 			def now = new Date().time

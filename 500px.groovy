@@ -6,28 +6,6 @@ def fivehundred = new FiveHundredPxService()
 
 def debugMode = config.debugMode
 
-def extractImageIdsFromFeed(feed) {
-	def ids = []
-	if (feed?.photos) {
-		feed.photos.each {
-			ids << it['id']
-		}
-	} else if (feed?.photo) {
-		ids << feed.photo.image_url
-	}
-	ids
-}
-
-def extractImageUrlsFromFeed(feed) {
-	def urls = []
-	if (feed?.photos) {
-		feed.photos.each {
-			urls << it['image_url'][0]
-		}
-	}
-	urls
-}
-
 def errorMessages = []
 
 def feed 
@@ -37,9 +15,9 @@ try {
 	errorMessages << 'Error loading feed'
 }
 
-def photos = extractImageUrlsFromFeed(feed)
+def photos = fivehundred.extractImageUrlsFromFeed(feed)
 def photoCount = photos?.size() ?: 0
-def photoIds = extractImageIdsFromFeed(feed)
+def photoIds = fivehundred.extractImageIdsFromFeed(feed)
 
 def selectedPhotoIndices = []
 

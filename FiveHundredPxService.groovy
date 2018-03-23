@@ -50,4 +50,27 @@ class FiveHundredPxService {
 		}
 		selected
 	}
+
+	def extractImageIdsFromFeed(feed) {
+		def ids = []
+		if (feed?.photos) {
+			feed.photos.each {
+				ids << it['id']
+			}
+		} else if (feed?.photo) {
+			ids << feed.photo.image_url
+		}
+		ids
+	}
+
+	def extractImageUrlsFromFeed(feed) {
+		def urls = []
+		if (feed?.photos) {
+			feed.photos.each {
+				urls << it['image_url'][0]
+			}
+		}
+		urls
+	}
+	
 }
