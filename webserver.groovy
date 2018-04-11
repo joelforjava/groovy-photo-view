@@ -8,9 +8,14 @@ import org.eclipse.jetty.servlet.*
 import groovy.servlet.*
 import static org.eclipse.jetty.servlet.ServletContextHandler.*
 
-def server = new Server(1234)
-def context = new ServletContextHandler(server, "/", SESSIONS)
-context.resourceBase = "."
-context.addServlet(DefaultServlet, "/")
-context.addServlet(GroovyServlet, "*.groovy")
-server.start()
+def startWebServer() {
+	def server = new Server(1234)
+	def context = new ServletContextHandler(server, "/", SESSIONS)
+	context.resourceBase = "."
+	context.addServlet(DefaultServlet, "/")
+	context.addServlet(GroovyServlet, "*.groovy")
+	context.addServlet(TemplateServlet, "*.gtpl")
+	server.start()
+}
+
+startWebServer()
