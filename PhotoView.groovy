@@ -1,6 +1,6 @@
 def config = new ConfigSlurper().parse(Config)
 
-def fivehundred = new FiveHundredPxService()
+def photoService = new PixabayService()
 
 def debugMode = config.debugMode
 
@@ -8,14 +8,14 @@ def errorMessages = []
 
 def feed 
 try {
-	feed = fivehundred.getPhotos([:])
+	feed = photoService.getPhotos([:])
 } catch(e) {
 	errorMessages << 'Error loading feed'
 }
 
-def photos = fivehundred.extractImageUrlsFromFeed(feed)
+def photos = photoService.extractImageUrlsFromFeed(feed)
 def photoCount = photos?.size() ?: 0
-def photoIds = fivehundred.extractImageIdsFromFeed(feed)
+def photoIds = photoService.extractImageIdsFromFeed(feed)
 
 def selectedPhotoIndices = []
 
@@ -41,7 +41,7 @@ def selectedPhotos = []
 
 selectedPhotoIds.each {
 	try {
-		selectedPhotos << fivehundred.getPhoto(it, [:])
+		selectedPhotos << photoService.getPhoto(it, feed)
 	} catch (e) {
 		errorMessages << "Error loading photo with ID $it"
 	}

@@ -44,7 +44,7 @@ class CacheService {
 		if (file.exists()) {
 			feed = jsonSlurper.parseText(file.text)
 			feed.loadFeedFromCache = true
-			expireCache()
+			// expireCache()
 		}
 		feed
 	}

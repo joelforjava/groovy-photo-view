@@ -9,7 +9,7 @@ def debugMode = request.getAttribute('debugMode')
 <!DOCTYPE html>
 <html>
 <head>
-	<title>500px Popular Photos</title>
+	<title>Popular Photos</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
@@ -27,12 +27,12 @@ def debugMode = request.getAttribute('debugMode')
 			    	<span class="icon-bar"></span>
 			    	<span class="icon-bar"></span>
 				</button>
-				<a href="#" class="navbar-brand">500px Photo Carousel</a>
+				<a href="#" class="navbar-brand">Photo Carousel</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="active">
-						<a href="500px.groovy">Reload Page</a>
+						<a href="PhotoView.groovy">Reload Page</a>
 					</li>
 				</ul>
 			</div>

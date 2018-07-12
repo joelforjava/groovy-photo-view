@@ -4,6 +4,7 @@
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.*
 
+@Deprecated
 class FiveHundredPxService {
 
 	private config 
