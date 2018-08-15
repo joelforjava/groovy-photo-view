@@ -1,3 +1,5 @@
+import services.PixabayService
+
 def config = new ConfigSlurper().parse(Config)
 
 def photoService = new PixabayService()

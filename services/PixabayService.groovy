@@ -1,3 +1,5 @@
+package services
+
 @Grapes([
     @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7' )
 ])
@@ -23,7 +25,7 @@ class PixabayService {
 	}
 
 	def getPhotos(args) {
-		def queryMap = [key:"$consumerKey", order: 'popular', editors_choice: 'true', image_type: 'photo', per_page: 28]
+		def queryMap = [key:"$consumerKey", order: 'popular', editors_choice: 'false', image_type: 'photo', per_page: 28]
 		if (args) {
 			queryMap << args
 		}
