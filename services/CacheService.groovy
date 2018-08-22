@@ -4,6 +4,8 @@ import groovy.json.*
 
 class CacheService {
 
+	private static final String TEMP_DIRECTORY = System.getProperty('java.io.tmpdir')
+
 	private static final String CACHE_DIR_NAME = '_cache'
 
 	private static final String MAIN_CACHE_FILE_NAME = '_cache.json'
