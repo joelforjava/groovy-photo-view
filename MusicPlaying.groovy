@@ -1,8 +1,3 @@
-html.html {
-	head {
-		title 'Now Playing'
-	}
-	body {
-		h1 'Hello!'
-	}
-}
+// load stuff here
+
+forward 'pages/now-playing.gtpl'
