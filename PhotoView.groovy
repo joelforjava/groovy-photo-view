@@ -57,4 +57,4 @@ request.setAttribute('json', jsonMap)
 request.setAttribute('debugMode', debugMode)
 request.setAttribute('errorMessages', errorMessages)
 
-forward 'frame.gtpl'
+forward 'pages/frame.gtpl'
