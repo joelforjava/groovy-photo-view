@@ -2,7 +2,7 @@
 import groovy.json.* 
 
 def errorMessages = request.getAttribute('errorMessages')
-def json = request.getAttribute('json')
+def np = request.getAttribute('np')
 def debugMode = request.getAttribute('debugMode')
 %>
 
@@ -38,5 +38,45 @@ def debugMode = request.getAttribute('debugMode')
 			</div>
 		</div>
 	</nav>
-	<h1>Hello</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-11 col-sm-offset-1">
+				<% if (np) { %>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">
+								Now Playing
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="media">
+								<% if (np.albumArtUri) { %>
+									<div class="media-left">
+										<img class="media-object" src="${np.albumArtUri}"/>
+									</div>
+								<% } %>
+								<div class="media-body">
+									<h3 class="media-heading">${np.songTitle}</h3>
+									<h4>${np.artistName}</h4>
+									<h4>From the album: ${np.album}</h4>
+								</div>
+							</div>
+						</div>
+						<% if (np.next) { %>
+							<div class="panel-footer">
+								Up Next: ${np.next.songTitle} by ${np.next.artistName}
+							</div>
+						<% } %>
+					</div>
+					<% if (debugMode) { %>
+						<div class="well">
+							<code>${ np }</code>
+						</div>
+					<% } %>
+				<% } else { %>
+					<h2>Nothing</h2>
+				<% } %>
+			</div>
+		</div>
+	</div>
 </body>
