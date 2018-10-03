@@ -59,12 +59,13 @@ def debugMode = request.getAttribute('debugMode')
 									<h3 class="media-heading">${np.songTitle}</h3>
 									<h4>${np.artistName}</h4>
 									<h4>From the album: ${np.album}</h4>
+									<h4>${np.elapsedDisplay} / ${np.durationDisplay}</h4>
 								</div>
 							</div>
 						</div>
 						<% if (np.next) { %>
 							<div class="panel-footer">
-								Up Next: ${np.next.songTitle} by ${np.next.artistName}
+								Up Next: <strong>${np.next.songTitle}</strong> by <strong>${np.next.artistName}</strong>
 							</div>
 						<% } %>
 					</div>

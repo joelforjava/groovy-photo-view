@@ -3,6 +3,8 @@ package services
 import groovy.json.*
 import groovy.transform.ToString
 
+import java.util.concurrent.TimeUnit
+
 class NowPlayingService {
 
 	private static final String FILE_NAME = 'now_playing'
@@ -54,7 +56,8 @@ class NowPlayingService {
 			if (currentState.currentTrack) {
 				def currentTrack = currentState.currentTrack
 				System.out.println("Now Loading: ${currentTrack?.title} by ${currentTrack?.artist}")
-				nowPlaying = new NowPlaying(artistName: currentTrack.artist, songTitle: currentTrack.title, album: currentTrack.album, duration: currentTrack.duration, albumArtUri: currentTrack.absoluteAlbumArtUri)
+				nowPlaying = new NowPlaying(artistName: currentTrack.artist, songTitle: currentTrack.title, album: currentTrack.album, duration: currentTrack.duration, albumArtUri: currentTrack.absoluteAlbumArtUri,
+					elapsedTime: currentState.elapsedTime, elapsedDisplay: currentState.elapsedTimeFormatted)
 			}
 			if (currentState.nextTrack) {
 				def nextTrack = currentState.nextTrack
@@ -70,7 +73,21 @@ class NowPlaying {
 	String artistName
 	String songTitle
 	String album
-	BigInteger duration
+	long duration
+	long elapsedTime
+	String durationDisplay
+	String elapsedDisplay
 	String albumArtUri
 	NowPlaying next
+
+	void setDuration(value) {
+		this.duration = value
+		def secs = value
+		def millis = secs * 1000
+		def hours =  TimeUnit.MILLISECONDS.toHours(millis)
+		def minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1)
+		def seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)
+
+		this.durationDisplay = new Formatter().format('%02d:%02d:%02d', Math.abs(hours), Math.abs(minutes), Math.abs(seconds))
+	}
 }
