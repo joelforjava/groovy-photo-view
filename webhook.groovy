@@ -26,16 +26,7 @@ headerNames.each { headerName ->
 	}
 }
 NowPlayingService service = new NowPlayingService()
-
-attrNames.each { attrName ->
-	System.out.println "Working with $attrName"
-	System.out.println "    Value: ${request.getAttribute(attrName)}"
-}
-
-paramNames.each { paramName ->
-	String value = request.getParameter(paramName)
-	System.out.printf('%s = %s', paramName, value)
-}
+SonosService sonos = new SonosService()
 
 System.out.println("Got bufferLength of $bufferLength")
 def reader = request.getInputStream()
@@ -56,6 +47,12 @@ try {
 	// If there is an error parsing, do we query the SONOS Server?
 	// Or do we create an 'error' object to tell the NP Service to
 	// query the server?
+	System.out.println("Attempting to call sonos service")
+	try {
+		json = sonos.checkState()
+	} catch(ce) {
+		System.err.println("There was an error connecting to the Sonos information service")
+	}
 }
 
 if (json?.data) {
@@ -65,7 +62,7 @@ if (json?.data) {
 			def currentTrack = data.state.currentTrack
 			System.out.println("Now Playing: ${currentTrack?.title} by ${currentTrack?.artist}")
 			// def nowPlaying = new NowPlayingObject(artistName: currentTrack.artist, songTitle: currentTrack.title, album: currentTrack.album, duration: currentTrack.duration)
-			service.save(jsonString)
+			service.save(JsonOutput.toJson(data.state))
 		}
 		if (data.state.playbackState == "STOPPED") {
 			System.out.println("Playback Stopped")
